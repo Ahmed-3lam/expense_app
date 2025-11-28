@@ -21,10 +21,13 @@ class BalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primaryBlue, Color(0xFF5B86E5)],
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryBlue,
+            AppColors.primaryBlue.withValues(alpha: 0.85),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -33,38 +36,57 @@ class BalanceCard extends StatelessWidget {
           BoxShadow(
             color: AppColors.primaryBlue.withValues(alpha: 0.3),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Total Balance',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.white.withOpacity(0.8),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Total Balance',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Icon(
+                    Icons.keyboard_arrow_up,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ],
+              ),
+              const Icon(Icons.more_horiz, color: Colors.white, size: 24),
+            ],
           ),
           const SizedBox(height: 8),
           isLoading
               ? Container(
-                  width: 120,
-                  height: 40,
+                  width: 140,
+                  height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 )
               : Text(
                   CurrencyFormatter.format(balance, currency: 'USD'),
                   style: AppTextStyles.header.copyWith(
-                    fontSize: 36,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    height: 1.2,
                   ),
                 ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
@@ -72,16 +94,15 @@ class BalanceCard extends StatelessWidget {
                   icon: Icons.arrow_downward,
                   label: 'Income',
                   amount: income,
-                  color: AppColors.incomeGreen,
                   isLoading: isLoading,
                 ),
               ),
+              const SizedBox(width: 16),
               Expanded(
                 child: _buildStatItem(
                   icon: Icons.arrow_upward,
                   label: 'Expenses',
                   amount: expenses,
-                  color: AppColors.expenseRed,
                   isLoading: isLoading,
                 ),
               ),
@@ -96,47 +117,52 @@ class BalanceCard extends StatelessWidget {
     required IconData icon,
     required String label,
     required double amount,
-    required Color color,
     required bool isLoading,
   }) {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12),
+            shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: Colors.white, size: 20),
+          child: Icon(icon, color: Colors.white, size: 14),
         ),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: AppTextStyles.caption.copyWith(
-                color: Colors.white.withOpacity(0.8),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: AppTextStyles.caption.copyWith(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            isLoading
-                ? Container(
-                    width: 60,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(4),
+              const SizedBox(height: 2),
+              isLoading
+                  ? Container(
+                      width: 60,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    )
+                  : Text(
+                      CurrencyFormatter.format(amount, currency: 'USD'),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        height: 1.2,
+                      ),
                     ),
-                  )
-                : Text(
-                    CurrencyFormatter.format(amount, currency: 'USD'),
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ],
     );

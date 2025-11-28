@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/constants/category_icons.dart';
-import '../../../../core/utils/currency_formatter.dart';
-import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entities/expense.dart';
 
 class ExpenseListItem extends StatelessWidget {
@@ -25,24 +23,18 @@ class ExpenseListItem extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardWhite,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(24),
+        // Removed shadow for cleaner look as per design
       ),
       child: Row(
         children: [
           // Category Icon
           Container(
-            width: 48,
-            height: 48,
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
-              color: categoryItem.color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: categoryItem.color.withValues(alpha: 0.1),
+              shape: BoxShape.circle, // Circular background
             ),
             child: Icon(categoryItem.icon, color: categoryItem.color, size: 24),
           ),
@@ -56,36 +48,42 @@ class ExpenseListItem extends StatelessWidget {
                 Text(
                   expense.category,
                   style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  DateFormatter.formatExpenseDate(expense.date),
-                  style: AppTextStyles.caption,
+                  'Manually', // Static as per design
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textLight,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
           ),
 
-          // Amount
+          // Amount & Time
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '-${CurrencyFormatter.format(expense.amount, currency: expense.currency)}',
+                '- \$${expense.amount.toStringAsFixed(0)}', // Simplified format as per design
                 style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.expenseRed,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: AppColors.textDark,
                 ),
               ),
-              if (expense.currency != 'USD') ...[
-                const SizedBox(height: 4),
-                Text(
-                  '~${CurrencyFormatter.format(expense.amountInUSD, currency: 'USD')}',
-                  style: AppTextStyles.caption,
+              const SizedBox(height: 4),
+              Text(
+                'Today ${TimeOfDay.fromDateTime(expense.date).format(context)}', // Simplified date
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textLight,
+                  fontSize: 12,
                 ),
-              ],
+              ),
             ],
           ),
         ],

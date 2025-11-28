@@ -19,68 +19,101 @@ class CategorySelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Category',
-          style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+          'Categories',
+          style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 100,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: AppCategories.categories.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              final category = AppCategories.categories[index];
-              final isSelected = selectedCategory == category.name;
-
+        const SizedBox(height: 16),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.85,
+          ),
+          itemCount: AppCategories.categories.length + 1, // +1 for Add Category
+          itemBuilder: (context, index) {
+            if (index == AppCategories.categories.length) {
+              // Add Category button
               return GestureDetector(
-                onTap: () => onCategorySelected(category.name),
+                onTap: () {
+                  // TODO: Implement add category
+                },
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: isSelected
-                            ? category.color
-                            : category.color.withOpacity(0.1),
+                        color: AppColors.background,
                         shape: BoxShape.circle,
-                        border: isSelected
-                            ? Border.all(color: Colors.white, width: 2)
-                            : null,
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: category.color.withOpacity(0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ]
-                            : null,
+                        border: Border.all(color: AppColors.divider, width: 2),
                       ),
-                      child: Icon(
-                        category.icon,
-                        color: isSelected ? Colors.white : category.color,
+                      child: const Icon(
+                        Icons.add,
+                        color: AppColors.textLight,
                         size: 28,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      category.name,
+                      'Add Category',
                       style: AppTextStyles.caption.copyWith(
-                        color: isSelected
-                            ? AppColors.textDark
-                            : AppColors.textLight,
-                        fontWeight: isSelected
-                            ? FontWeight.w600
-                            : FontWeight.normal,
+                        color: AppColors.textLight,
+                        fontSize: 11,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               );
-            },
-          ),
+            }
+
+            final category = AppCategories.categories[index];
+            final isSelected = selectedCategory == category.name;
+
+            return GestureDetector(
+              onTap: () => onCategorySelected(category.name),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? category.color
+                          : category.color.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      category.icon,
+                      color: isSelected ? Colors.white : category.color,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    category.name,
+                    style: AppTextStyles.caption.copyWith(
+                      color: isSelected
+                          ? AppColors.textDark
+                          : AppColors.textLight,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                      fontSize: 11,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );

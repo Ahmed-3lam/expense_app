@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:io';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
-import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../bloc/expense_bloc.dart';
 import '../bloc/expense_event.dart';
@@ -194,100 +192,89 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Category Selector
-              CategorySelector(
-                selectedCategory: _selectedCategory,
-                onCategorySelected: (category) {
-                  setState(() {
-                    _selectedCategory = category;
-                  });
-                },
+              // Category Dropdown (showing selected category)
+              Text(
+                'Categories',
+                style: AppTextStyles.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _selectedCategory ?? 'Select category',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: _selectedCategory != null
+                            ? AppColors.textDark
+                            : AppColors.textLight,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: AppColors.textLight,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
               // Amount Field
               Text(
                 'Amount',
                 style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: _amountController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      style: AppTextStyles.bodyLarge,
-                      decoration: InputDecoration(
-                        hintText: '0.00',
-                        hintStyle: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textLight,
-                        ),
-                        filled: true,
-                        fillColor: AppColors.cardWhite,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter amount';
-                        }
-                        if (double.tryParse(value) == null) {
-                          return 'Please enter valid amount';
-                        }
-                        if (double.parse(value) <= 0) {
-                          return 'Amount must be greater than 0';
-                        }
-                        return null;
-                      },
-                    ),
+              TextFormField(
+                controller: _amountController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                style: AppTextStyles.bodyLarge,
+                decoration: InputDecoration(
+                  hintText: '\$50,000',
+                  hintStyle: AppTextStyles.bodyLarge.copyWith(
+                    color: AppColors.textLight,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: AppColors.cardWhite,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: DropdownButton<String>(
-                        value: _selectedCurrency,
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _selectedCurrency = value;
-                            });
-                          }
-                        },
-                        underline: const SizedBox(),
-                        isExpanded: true,
-                        style: AppTextStyles.bodyMedium,
-                        items: CurrencyFormatter.getSupportedCurrencies().map((
-                          currency,
-                        ) {
-                          return DropdownMenuItem<String>(
-                            value: currency,
-                            child: Text(currency),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                  filled: true,
+                  fillColor: AppColors.background,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                ],
+                  contentPadding: const EdgeInsets.all(16),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter amount';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter valid amount';
+                  }
+                  if (double.parse(value) <= 0) {
+                    return 'Amount must be greater than 0';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 24),
               // Date Field
               Text(
                 'Date',
                 style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 12),
@@ -302,14 +289,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     color: AppColors.textLight,
                   ),
                   filled: true,
-                  fillColor: AppColors.cardWhite,
+                  fillColor: AppColors.background,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.all(16),
                   suffixIcon: const Icon(
-                    Icons.calendar_today,
+                    Icons.calendar_today_outlined,
                     color: AppColors.textLight,
                   ),
                 ),
@@ -319,7 +306,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               Text(
                 'Attach Receipt',
                 style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 12),
@@ -327,41 +314,46 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 onTap: _pickReceipt,
                 child: Container(
                   width: double.infinity,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: AppColors.cardWhite,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.divider,
-                      style: BorderStyle.solid,
-                    ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
                   ),
-                  child: _receiptPath != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            File(_receiptPath!),
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.camera_alt,
-                              size: 40,
-                              color: AppColors.textLight,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Upload Image',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textLight,
-                              ),
-                            ),
-                          ],
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        _receiptPath != null
+                            ? 'Receipt attached'
+                            : 'Upload image',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textLight,
                         ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        _receiptPath != null
+                            ? Icons.check_circle
+                            : Icons.camera_alt_outlined,
+                        color: _receiptPath != null
+                            ? AppColors.success
+                            : AppColors.textLight,
+                      ),
+                    ],
+                  ),
                 ),
+              ),
+              const SizedBox(height: 32),
+              // Category Grid Selector
+              CategorySelector(
+                selectedCategory: _selectedCategory,
+                onCategorySelected: (category) {
+                  setState(() {
+                    _selectedCategory = category;
+                  });
+                },
               ),
               const SizedBox(height: 32),
               // Save Button
