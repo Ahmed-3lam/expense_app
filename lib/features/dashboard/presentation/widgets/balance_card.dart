@@ -21,22 +21,15 @@ class BalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primaryBlue,
-            AppColors.primaryBlue.withValues(alpha: 0.85),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
+        color: const Color.fromARGB(255, 66, 96, 237), // Slightly lighter blue
+        borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
             color: AppColors.primaryBlue.withValues(alpha: 0.3),
             blurRadius: 20,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -51,27 +44,26 @@ class BalanceCard extends StatelessWidget {
                   Text(
                     'Total Balance',
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: Colors.white,
-                      fontSize: 14,
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 4),
                   const Icon(
                     Icons.keyboard_arrow_up,
                     color: Colors.white,
-                    size: 18,
+                    size: 16,
                   ),
                 ],
               ),
-              const Icon(Icons.more_horiz, color: Colors.white, size: 24),
+              const Icon(Icons.more_horiz, color: Colors.white),
             ],
           ),
           const SizedBox(height: 8),
           isLoading
               ? Container(
-                  width: 140,
-                  height: 36,
+                  width: 120,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
@@ -83,10 +75,9 @@ class BalanceCard extends StatelessWidget {
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    height: 1.2,
                   ),
                 ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Row(
             children: [
               Expanded(
@@ -94,15 +85,16 @@ class BalanceCard extends StatelessWidget {
                   icon: Icons.arrow_downward,
                   label: 'Income',
                   amount: income,
+                  color: Colors.white, // White text/icon on blue card
                   isLoading: isLoading,
                 ),
               ),
-              const SizedBox(width: 16),
               Expanded(
                 child: _buildStatItem(
                   icon: Icons.arrow_upward,
                   label: 'Expenses',
                   amount: expenses,
+                  color: Colors.white,
                   isLoading: isLoading,
                 ),
               ),
@@ -117,53 +109,49 @@ class BalanceCard extends StatelessWidget {
     required IconData icon,
     required String label,
     required double amount,
+    required Color color,
     required bool isLoading,
   }) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.white, size: 14),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: Colors.white, size: 12),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: AppTextStyles.caption.copyWith(
+                color: Colors.white.withValues(alpha: 0.8),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: AppTextStyles.caption.copyWith(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
+        const SizedBox(height: 6),
+        isLoading
+            ? Container(
+                width: 60,
+                height: 16,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              )
+            : Text(
+                CurrencyFormatter.format(amount, currency: 'USD'),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
                 ),
               ),
-              const SizedBox(height: 2),
-              isLoading
-                  ? Container(
-                      width: 60,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    )
-                  : Text(
-                      CurrencyFormatter.format(amount, currency: 'USD'),
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        height: 1.2,
-                      ),
-                    ),
-            ],
-          ),
-        ),
       ],
     );
   }
