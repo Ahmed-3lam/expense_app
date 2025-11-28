@@ -12,6 +12,7 @@ A lightweight expense tracking mobile application built with Flutter that works 
 - ✅ **Filtering** - Filter expenses by date range (This Month, Last 7 Days, Last 30 Days, All Time)
 - ✅ **BLoC Pattern** - Clean architecture with separate BLoCs for each feature
 - ✅ **Dependency Injection** - Automated DI using GetIt and Injectable
+- ✅ **App Icon & Splash** - Professional branding with generated assets
 - ✅ **Custom UI** - Beautiful design matching the provided specifications
 
 ## 🏗️ Architecture
@@ -42,19 +43,19 @@ lib/
 - **Entities**: Pure Dart objects representing business concepts.
 - **Use Cases**: Encapsulate specific business rules.
 - **Repository Interfaces**: Define contracts for data operations.
-- **Dependencies**: None (Pure Dart).
+
 
 **Data Layer (Middle Layer):**
 - **Models**: Data transfer objects (DTOs) with serialization logic (Hive/JSON).
 - **Data Sources**: Handle raw data access (Local DB, Remote API).
 - **Repositories**: Implement domain repository interfaces, coordinating data sources.
-- **Dependencies**: Domain Layer.
+
 
 **Presentation Layer (Outer Layer):**
 - **BLoC**: Manages state and handles user events using Use Cases.
 - **Screens**: UI pages.
 - **Widgets**: Reusable UI components.
-- **Dependencies**: Domain Layer.
+
 
 ## 🎯 State Management
 
@@ -317,6 +318,11 @@ The app will automatically:
 - Widgets are small and reusable
 - Constants are centralized
 - Dependency Injection for loose coupling
+
+### Asset Generation
+- **Icons**: `dart run flutter_launcher_icons`
+- **Splash Screen**: `dart run flutter_native_splash:create`
+- **Hive Adapters & DI**: `dart run build_runner build --delete-conflicting-outputs`
 
 ### Code Style
 - Follow Flutter style guide
